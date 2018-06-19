@@ -5,6 +5,7 @@ app.controller('toDoController', function($scope, $http){
         $scope.todoList = [];
         for (var i = 0; i < response.data.length; i++){
             var todo = {};
+            todo.id = response.data[i].id
             todo.todoText = response.data[i].todo_text
             todo.done = response.data[i].todo_done
             $scope.todoList.push(todo);
@@ -18,8 +19,12 @@ app.controller('toDoController', function($scope, $http){
     $scope.remove = function () {
         var oldList = $scope.todoList;
         $scope.todoList = [];
-        angular.forEach(oldList, function (x) {
-            if (!x.done) $scope.todoList.push(x);
+        angular.forEach(oldList, function (todo) {
+            if (todo.done){
+                $http.delete('/todo/api/'+todo.id+'/');
+            } else {
+                $scope.todoList.push(todo);
+            }
         })
     }
 })
